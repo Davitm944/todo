@@ -4,6 +4,7 @@ import check from 'components/Icons/check.png';
 import edit from 'components/Icons/pen.png';
 import remove from 'components/Icons/x.png';
 import EditModal from 'components/EditModal';
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 
 function App() {
 
@@ -49,6 +50,19 @@ function App() {
 	}
 
 
+	const onDragEnd = (result) => {
+		if(!result.destination){
+			return
+		}
+		const newList = list;
+		const [reOrdered] = newList.splice(result.source.index, 1)
+		newList.splice(result.destination.index, 0, reOrdered);
+		setList(newList)
+	} 
+
+
+
+
                    
 	return (
 		<div className='bg-neutral-200 w-screen h-screen flex flex-col'>
@@ -71,10 +85,15 @@ function App() {
 					</button>
 				</div>
 				<div>
-					<section>
-						{list.map((item) => {
+					<DragDropContext onDragEnd={onDragEnd}>
+						<Droppable droppableId='droppable-1 '>
+							{(provided ) =>  (
+					<section {...provided.droppableProps} ref={provided.innerRef}>
+						{list.map((item, index) => {
 							return (
-								<div key={item.key} className='flex justify-between px-2 bg-gray-300 border-b-2 border-black'>
+								<Draggable key={item.key} draggableId={item.key} index={index}>
+									{(provided) => ( 
+								<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef } className='flex justify-between px-2 bg-gray-300 border-b-2 border-black'>
 									<div className='max-w-xl w-full'>
 										{item.done ? <span className='line-through'>{item.value}</span> :  <span>{item.value}</span>}
 									</div>
@@ -90,9 +109,17 @@ function App() {
 										</div>
 									</div>
 								</div>
+								)}
+								</Draggable>
 							);
 						})}
+
+					{provided.placeholder}
 					</section>
+					
+					)}
+					</Droppable>
+					</DragDropContext>
 				</div>
 			</div>
 		</div>
