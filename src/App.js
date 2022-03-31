@@ -20,12 +20,17 @@ function App() {
 
 	const onAdd = () => {
 		const newList = list;
+		if(addItem.length <= 0){
+			alert('type valid value')
+			return
+		}
 		const newItem = {
 			value : addItem,
 			key   : uuidv4(),
 			done  : false,
 			time	: null
 		}
+
 		newList.push(newItem);
 		setList(newList);
 		setAddItem('');
