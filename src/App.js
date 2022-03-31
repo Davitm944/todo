@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import check from 'components/Icons/check.png';
-import edit from 'components/Icons/pen.png';
-import remove from 'components/Icons/x.png';
-import watch from 'components/Icons/stopwatch.png'
-import EditModal from 'components/EditModal';
+import check from 'components/icons/check.png';
+import edit from 'components/icons/pen.png';
+import remove from 'components/icons/x.png';
+import watch from 'components/icons/stopwatch.png'
+import EditModal from 'components/modals/EditModal';
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import Countdown from 'react-countdown';
-import CountDownModal from 'components/countdown/CountDownModal';
+import CountDownModal from 'components/modals/CountDownModal';
+import Input from 'components/input/Input' 
+
 
 function App() {
 
@@ -17,8 +19,6 @@ function App() {
 	const [ openCount, setOpenCount ] = useState(false);
 	const [time, setTime] = useState(0)
 	const [key, setKey] = useState('')
-
-
 
 	useEffect(() => {
 		const data = localStorage.getItem('todo-list')
@@ -48,7 +48,6 @@ function App() {
 		setList(newList);
 		setAddItem('');
 	};
-
 	const onDelete = (key) => {
 		const newList = list.filter((item) => {
 			return item.key !== key;
@@ -65,6 +64,9 @@ function App() {
 		const newList = list.filter((item) => {
 			if (item.key === key) {
 				item.done = !item.done;
+				if(item.time){
+					item.time = null
+				}
 			}
 			return item;
 		});
@@ -91,22 +93,7 @@ function App() {
 			{open ? <EditModal open={open} setOpen={setOpen} list={list} setList={setList} itemKey={key}  /> : <></>}
 			{openCount ? <CountDownModal setTime={setTime} setOpenCount={setOpenCount} list={list} setList={setList} itemKey={key}/> : <></>}
 			<div className='mx-auto my-5 w-1/2 h-full bg-neutral-400 shadow-lg rounded-sm shadow-gray-500  flex flex-col '>
-				<div className='mx-auto my-12 mt-12 '>
-					<input
-						type='text'
-						placeholder='Add ToDo'
-						className='border-2 border-solid border-gray-500 rounded py-3 px-2  h-10 sm:w-64 -ml-0.5'
-						onChange={(e) => {
-							setAddItem(e.target.value);
-						}}
-						value={addItem}
-					/>
-					<button
-						className='bg-gradient-to-r from-gray-500 to-gray-700 py-2 px-6 rounded-r-lg text-white ml-[-5px]'
-						onClick={onAdd}>
-						Submit
-					</button>
-				</div>
+					<Input list={list} setList={setList} addItem={addItem} setAddItem={setAddItem} onAdd={onAdd}/>
 				<div>
 					<DragDropContext onDragEnd={onDragEnd}>
 						<Droppable droppableId='droppable-1 '>
