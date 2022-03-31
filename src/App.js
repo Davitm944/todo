@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import check from 'components/Icons/check.png';
 import edit from 'components/Icons/pen.png';
@@ -17,6 +17,19 @@ function App() {
 	const [ openCount, setOpenCount ] = useState(false);
 	const [time, setTime] = useState(0)
 	const [key, setKey] = useState('')
+
+
+
+	useEffect(() => {
+		const data = localStorage.getItem('todo-list')
+		if(data) {
+			setList(JSON.parse(data))
+		}
+	}, [])
+
+	useEffect(() => {
+		localStorage.setItem('todo-list', JSON.stringify(list))	
+	})
 
 	const onAdd = () => {
 		const newList = list;
@@ -100,15 +113,15 @@ function App() {
 							{(provided ) =>  (
 					<section {...provided.droppableProps} ref={provided.innerRef}>
 						{list.map((item, index) => {
-							console.log(item)
 							return (
 								<Draggable key={item.key} draggableId={item.key} index={index}>
 									{(provided) => ( 
 								<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef } className='todo_item'>
-									<div className='max-w-xl w-full'>
+									<div className='max-w-xl w-full sticky'>
 										{item.done ? <span className='line-through'>{item.value}</span> :  <span>{item.value}</span>}
 									</div>
 									<div className='flex'>
+									{item.time ? <div className='timer'><Countdown date={Date.now() + 1000 * 60 * item.time} /></div> : <></>}
 										<div className='wrapper'>
 											<img src={watch} alt='logo' onClick={() => handleTimer(item.key)}/>
 										</div>
@@ -122,13 +135,11 @@ function App() {
 											<img src={remove} alt='logo' onClick={() => onDelete(item.key)} />
 										</div>
 									</div>
-									{item.time ? <div className='timer'><Countdown date={Date.now() + 1000 * 60 * item.time} /></div> : <></>}
 								</div>
 								)}
 								</Draggable>
 							);
 						})}
-
 					{provided.placeholder}
 					</section>
 					
