@@ -22,7 +22,6 @@ function CountDownModal(props) {
 				return item;
 			});
 			props.setList(newList);
-			console.log(newList);
 		} else {
 			alert('type valid value');
 		}
