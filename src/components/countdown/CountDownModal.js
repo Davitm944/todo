@@ -22,7 +22,7 @@ function CountDownModal(props) {
 				return item;
 			});
 			props.setList(newList);
-      console.log(newList)
+			console.log(newList);
 		} else {
 			alert('type valid value');
 		}
@@ -36,7 +36,7 @@ function CountDownModal(props) {
 	return (
 		<div>
 			<Dialog open={open} onClose={handleClose}>
-				<DialogTitle>Subscribe</DialogTitle>
+				<DialogTitle>Set timer</DialogTitle>
 				<DialogContent>
 					<DialogContentText>Please set the time when task should be done!</DialogContentText>
 					<TextField
